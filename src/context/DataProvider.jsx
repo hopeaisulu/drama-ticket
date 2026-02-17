@@ -157,6 +157,22 @@ export const DataProvider = ({ children }) => {
         }
     };
 
+    const updateShowingDate = async (eventId, date) => {
+        const { error } = await supabase
+            .from('events')
+            .update({ date })
+            .eq('id', eventId);
+
+        if (error) {
+            console.error('Error updating showing date:', error.message);
+            await fetchData();
+            return false;
+        }
+
+        await fetchData();
+        return true;
+    };
+
     const addShowing = async (baseEventId, newDate) => {
         try {
             const baseEvent = events.find(e => e.id === baseEventId);
@@ -442,6 +458,7 @@ export const DataProvider = ({ children }) => {
             login,
             logout,
             updateEvent,
+            updateShowingDate,
             addShowing,
             deleteShowing,
             deletePlayGroup,

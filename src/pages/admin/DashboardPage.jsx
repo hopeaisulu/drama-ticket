@@ -9,7 +9,7 @@ import '../../styles/Admin.css';
 
 const DashboardPage = () => {
     const navigate = useNavigate();
-    const { events, seats, loading, fetchData, addShowing, deleteShowing, updateEvent } = useData();
+    const { events, seats, loading, fetchData, addShowing, deleteShowing, updateShowingDate } = useData();
 
     React.useEffect(() => {
         // DataProvider handles initial fetch, only call if needed manual refresh
@@ -52,11 +52,12 @@ const DashboardPage = () => {
         });
 
         if (formValues) {
-            await updateEvent({
-                ...showing,
-                date: formValues
-            });
-            notifySuccess('Showing date updated.');
+            const success = await updateShowingDate(showing.id, formValues);
+            if (success) {
+                notifySuccess('Showing date updated.');
+            } else {
+                notifyError('Failed to update showing date.');
+            }
         }
     };
 
