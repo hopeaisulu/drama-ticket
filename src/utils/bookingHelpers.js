@@ -11,88 +11,44 @@ const dedupeSeatIds = (seatIds = []) => [...new Set(seatIds.filter(Boolean))];
  * Returns success=false when some seats were taken concurrently.
  */
 export const createBookingWithSeats = async (bookingData, seatIds) => {
-    const uniqueSeatIds = dedupeSeatIds(seatIds);
+    const uniqueSeatIds = dedupeSeatIds(seatIds).map((id) => String(id));
 
     if (uniqueSeatIds.length === 0) {
         throw new Error('At least one seat must be selected.');
     }
 
-    // 1) Lock seats by flipping only currently available seats
-    const { data: lockedSeats, error: lockError } = await supabase
-        .from('seats')
-        .update({ is_booked: true })
-        .in('id', uniqueSeatIds)
-        .eq('is_booked', false)
-        .select('id');
+    const { data, error } = await supabase.rpc('create_booking_with_seats', {
+        p_name: bookingData.name,
+        p_email: bookingData.email,
+        p_phone: bookingData.phone,
+        p_event_id: bookingData.event_id,
+        p_total_price: bookingData.total_price,
+        p_seats: bookingData.seats,
+        p_seat_ids: uniqueSeatIds,
+    });
 
-    if (lockError) throw lockError;
-
-    const lockedSeatIds = (lockedSeats || []).map((seat) => seat.id);
-    if (lockedSeatIds.length !== uniqueSeatIds.length) {
-        // Release any partial locks so users can retry safely.
-        if (lockedSeatIds.length > 0) {
-            await supabase
-                .from('seats')
-                .update({ is_booked: false })
-                .in('id', lockedSeatIds);
+    if (error) {
+        if (error.code === 'PGRST202') {
+            throw new Error('Database function create_booking_with_seats() is missing. Run hardened-rls-patch.sql first.');
         }
+        throw error;
+    }
 
+    if (!data?.success) {
         return {
             success: false,
-            reason: 'SEATS_UNAVAILABLE',
-            unavailableSeatIds: uniqueSeatIds.filter((id) => !lockedSeatIds.includes(id)),
+            reason: data?.reason || 'BOOKING_FAILED',
+            unavailableSeatIds: data?.unavailable_seat_ids || [],
         };
     }
 
-    let createdBookingId = null;
-
-    try {
-        // 2) Create booking row
-        const { data: booking, error: bookingError } = await supabase
-            .from('bookings')
-            .insert({
-                name: bookingData.name,
-                email: bookingData.email,
-                phone: bookingData.phone,
-                event_id: bookingData.event_id,
-                total_price: bookingData.total_price,
-                seats: bookingData.seats,
-            })
-            .select()
-            .single();
-
-        if (bookingError) throw bookingError;
-        createdBookingId = booking.id;
-
-        // 3) Create junction rows
-        const junctionEntries = uniqueSeatIds.map((seatId) => ({
-            booking_id: booking.id,
-            seat_id: seatId,
-        }));
-
-        const { error: junctionError } = await supabase
-            .from('booking_seats')
-            .insert(junctionEntries);
-
-        if (junctionError) throw junctionError;
-
-        return { success: true, booking };
-    } catch (error) {
-        // Best-effort rollback of booking + seat lock on failure.
-        if (createdBookingId) {
-            await supabase
-                .from('bookings')
-                .delete()
-                .eq('id', createdBookingId);
-        }
-
-        await supabase
-            .from('seats')
-            .update({ is_booked: false })
-            .in('id', uniqueSeatIds);
-
-        throw error;
-    }
+    return {
+        success: true,
+        booking: {
+            id: data.booking_id,
+            ...bookingData,
+        },
+    };
 };
 
 /**
