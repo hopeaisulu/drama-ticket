@@ -1,0 +1,142 @@
+.event-hero {
+    height: 400px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    margin-bottom: -100px;
+    /* Overlap effect */
+    color: white;
+}
+
+.event-hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.8) 100%);
+}
+
+.event-hero-content {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-bottom: 120px;
+}
+
+.event-hero-title {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.event-meta {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.event-tag {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(4px);
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.event-price-tag {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    background: white;
+    padding: 4px 12px;
+    border-radius: 4px;
+}
+
+.event-content-wrapper {
+    position: relative;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    padding-bottom: 4rem;
+}
+
+.info-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.event-description {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: #576574;
+    margin-bottom: 2rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--gray);
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.info-label {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    color: #747d8c;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.info-value {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--secondary-color);
+}
+
+.booking-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 100px;
+}
+
+.booking-card h3 {
+    margin-bottom: 0.5rem;
+}
+
+.booking-note {
+    font-size: 0.9rem;
+    color: #747d8c;
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .event-content-wrapper {
+        grid-template-columns: 1fr;
+        margin-top: 100px;
+        /* To account for no overlap on mobile if desired, or keep as is */
+    }
+
+    .event-hero {
+        margin-bottom: 0;
+        height: 300px;
+    }
+
+    .event-hero-content {
+        padding-bottom: 2rem;
+    }
+}

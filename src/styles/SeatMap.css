@@ -1,0 +1,354 @@
+.seat-map-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #f8f9fa;
+    padding: 3rem 2rem;
+    border-radius: 12px;
+    border: 1px solid #e1e4e8;
+    overflow-x: auto;
+    width: 100%;
+}
+
+.stage-screen {
+    width: 80%;
+    height: 40px;
+    background: #dfe4ea;
+    border-radius: 0 0 50px 50px;
+    /* Curve effect */
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #747d8c;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.seats-grid {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 2rem;
+    padding: 0 1rem;
+}
+
+.seats-grid-shell {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.row-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #475569;
+    text-transform: uppercase;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.row-label.left {
+    margin-right: 25px;
+    text-align: right;
+    justify-content: flex-end;
+}
+
+.row-label.right {
+    margin-left: 25px;
+    text-align: left;
+}
+
+.row-delete-btn {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fee2e2;
+    color: #ef4444;
+    border: none;
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+}
+
+.row-label:hover .row-delete-btn {
+    opacity: 1;
+}
+
+.row-delete-btn:hover {
+    background: #ef4444;
+    color: white;
+}
+
+.add-row-inline-container {
+    padding: 1rem 0;
+    width: 100%;
+}
+
+.add-row-inline-btn {
+    width: 100%;
+    padding: 12px;
+    background: #f8fafc;
+    border: 2px dashed #cbd5e1;
+    border-radius: 12px;
+    color: #64748b;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.add-row-inline-btn:hover {
+    background: #f1f5f9;
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.add-column-side-btn {
+    border: 2px dashed #cbd5e1;
+    background: #f8fafc;
+    color: #64748b;
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-weight: 700;
+    font-size: 0.82rem;
+    min-width: 92px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+}
+
+.add-column-side-btn:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    background: #fff;
+}
+
+.seat-spacer {
+    width: 32px;
+    height: 32px;
+}
+
+.seat {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px 8px 4px 4px;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.seat:disabled {
+    cursor: not-allowed;
+}
+
+/* Tooltip */
+.seat-tooltip {
+    visibility: hidden;
+    width: 120px;
+    background-color: #2f3542;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 10;
+    bottom: 110%;
+    /* Place above seat */
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 0.75rem;
+    pointer-events: none;
+}
+
+.seat:hover .seat-tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Include arrow for tooltip */
+.seat-tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #2f3542 transparent transparent transparent;
+}
+
+
+/* Seat Types Colors */
+.seat-vip {
+    background-color: #ffd32a;
+    /* Gold */
+}
+
+.seat-standard {
+    background-color: #3c40c6;
+    /* Blueish */
+}
+
+.seat-budget {
+    background-color: #0be881;
+    /* Green */
+}
+
+/* States */
+.seat.booked {
+    background-color: #d2dae2;
+    box-shadow: none;
+}
+
+.seat.selected {
+    background-color: #ff4757;
+    /* Primary Red */
+    transform: scale(1.1);
+    box-shadow: 0 0 0 2px white, 0 0 0 4px #ff4757;
+    z-index: 2;
+}
+
+.seat:not(.booked):hover {
+    transform: scale(1.15);
+    z-index: 2;
+}
+
+/* Legend */
+.seat-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+}
+
+.seat-sample {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+}
+
+.seat-sample.vip {
+    background-color: #ffd32a;
+}
+
+.seat-sample.standard {
+    background-color: #3c40c6;
+}
+
+.seat-sample.budget {
+    background-color: #0be881;
+}
+
+.seat-sample.booked {
+    background-color: #d1d5db;
+    border: 1px solid #9ca3af;
+}
+
+.seat-sample.selected {
+    background-color: #e74c3c;
+    border: 1px solid #c0392b;
+    box-shadow: 0 0 4px rgba(231, 76, 60, 0.5);
+}
+
+/* Compact mode for Manage Seats page only */
+.edit-seats-page .seat-map-container {
+    padding: 1.6rem 1.2rem;
+    border-radius: 10px;
+}
+
+.edit-seats-page .stage-screen {
+    height: 30px;
+    margin-bottom: 1.2rem;
+    font-size: 0.8rem;
+    letter-spacing: 1.5px;
+}
+
+.edit-seats-page .seats-grid {
+    gap: 6px;
+    margin-bottom: 1.1rem;
+    padding: 0 0.55rem;
+}
+
+.edit-seats-page .seats-grid-shell {
+    gap: 8px;
+}
+
+.edit-seats-page .row-label {
+    font-size: 0.74rem;
+    gap: 8px;
+}
+
+.edit-seats-page .row-label.left {
+    margin-right: 14px;
+}
+
+.edit-seats-page .row-label.right {
+    margin-left: 14px;
+}
+
+.edit-seats-page .seat,
+.edit-seats-page .seat-spacer {
+    width: 28px;
+    height: 28px;
+}
+
+.edit-seats-page .seat {
+    border-radius: 7px 7px 3px 3px;
+}
+
+.edit-seats-page .add-row-inline-container {
+    padding: 0.55rem 0;
+}
+
+.edit-seats-page .add-row-inline-btn {
+    padding: 8px 10px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+}
+
+.edit-seats-page .add-column-side-btn {
+    min-width: 76px;
+    font-size: 0.75rem;
+    padding: 8px 8px;
+    border-radius: 10px;
+}
+
+.edit-seats-page .seat-legend {
+    gap: 0.95rem;
+    margin-top: 0.65rem;
+}
+
+.edit-seats-page .legend-item {
+    gap: 0.4rem;
+    font-size: 0.82rem;
+}
+
+.edit-seats-page .seat-sample {
+    width: 16px;
+    height: 16px;
+}
